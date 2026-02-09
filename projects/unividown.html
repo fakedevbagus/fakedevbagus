@@ -269,6 +269,53 @@
             margin-bottom: 16px;
         }
 
+        .preview-hero {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            text-align: left;
+        }
+
+        .preview-hero img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border-radius: 16px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 4px 20px rgba(0, 212, 255, 0.2));
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        .preview-hero img:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 6px 30px rgba(0, 212, 255, 0.35));
+        }
+
+        .preview-hero-text strong {
+            font-size: 1.2rem;
+            color: #e0e0e0;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .preview-hero-text span {
+            font-size: 0.9rem;
+            color: #606060;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            .preview-hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .preview-hero img {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
         .screenshot-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -762,11 +809,13 @@
             <h2 class="section-title">Preview</h2>
             <div class="screenshot-grid">
                 <div class="screenshot-placeholder">
-                    <div>
-                        <span class="icon">🎬</span>
-                        <strong>UniviDown Interface</strong><br>
-                        Modern web-based downloader UI with glassmorphism design,<br>
-                        platform-based dynamic themes, and real-time progress tracking.
+                    <div class="preview-hero">
+                        <img src="https://raw.githubusercontent.com/fakedevbagus/unividown/main/public/assets/logouniversaldown.png" alt="UniviDown Logo" loading="lazy">
+                        <div class="preview-hero-text">
+                            <strong>UniviDown Interface</strong>
+                            <span>Modern web-based downloader UI with glassmorphism design,<br>
+                            platform-based dynamic themes, and real-time progress tracking.</span>
+                        </div>
                     </div>
                 </div>
                 <div class="screenshot-row">
