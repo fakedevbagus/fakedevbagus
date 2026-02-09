@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects — FakeDevBagus</title>
+    <title>FakeDevBagus — Independent Developer & System Builder</title>
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <meta name="description" content="FakeDevBagus — Independent developer building system tools, performance utilities, and practical software products.">
+    <meta property="og:title" content="FakeDevBagus — Developer Portfolio">
+    <meta property="og:description" content="System tools, monitoring utilities, and media software projects.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/assets/preview.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,7 +30,7 @@
             background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 50%, #0a0a0a 100%);
             color: #e0e0e0;
             line-height: 1.7;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* ========== UTILITY ========== */
@@ -34,158 +40,144 @@
             padding: 0 24px;
         }
 
-        /* ========== BACK BUTTON ========== */
-        .back-nav {
-            padding: 24px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        section {
+            padding: 100px 0;
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #a0a0a0;
-            text-decoration: none;
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            margin: 16px auto 0;
+            border-radius: 2px;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
 
-        .back-link:hover {
-            color: #00d4ff;
+        .navbar.scrolled {
+            padding: 12px 0;
+            background: rgba(10, 10, 10, 0.95);
         }
 
-        .back-link .arrow {
-            transition: transform 0.3s ease;
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .back-link:hover .arrow {
-            transform: translateX(-4px);
-        }
-
-        /* ========== HEADER SECTION ========== */
-        .page-header {
-            padding: 80px 0 60px;
-            text-align: center;
-            background: radial-gradient(ellipse at center top, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
-        }
-
-        .page-title {
+        .nav-logo {
             font-family: 'Poppins', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 3.5rem);
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 700;
             color: #ffffff;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
+            text-decoration: none;
             background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: opacity 0.3s ease;
         }
 
-        .page-subtitle {
-            font-size: 1.15rem;
-            color: #909090;
-            max-width: 500px;
-            margin: 0 auto;
+        .nav-logo:hover {
+            opacity: 0.8;
         }
 
-        /* ========== PROJECT GRID ========== */
-        .projects-section {
-            padding: 60px 0 100px;
-        }
-
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        .nav-menu {
+            display: flex;
             gap: 32px;
+            list-style: none;
         }
 
-        /* ========== PROJECT CARD ========== */
-        .project-card {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.4s ease;
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
         }
 
-        .project-card::before {
+        .nav-link::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: -4px;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at top left, rgba(0, 212, 255, 0.08) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            width: 0;
+            height: 2px;
+            background: #00d4ff;
+            transition: width 0.3s ease;
         }
 
-        .project-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0, 212, 255, 0.4);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 212, 255, 0.12);
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-card-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .project-name {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 16px;
-        }
-
-        .project-description {
-            font-size: 1.05rem;
-            color: #909090;
-            line-height: 1.8;
-            margin-bottom: 24px;
-        }
-
-        /* ========== TECH BADGES ========== */
-        .tech-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 28px;
-        }
-
-        .tech-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #c0c0c0;
-            transition: all 0.3s ease;
-        }
-
-        .tech-badge:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: rgba(0, 212, 255, 0.4);
+        .nav-link:hover {
             color: #00d4ff;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.highlight {
+            color: #00d4ff;
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 6px;
+        }
+
+        .nav-link.highlight::after {
+            display: none;
+        }
+
+        .nav-link.highlight:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .nav-toggle span {
+            width: 24px;
+            height: 2px;
+            background: #ffffff;
+            transition: all 0.3s ease;
         }
 
         /* ========== BUTTONS ========== */
         .btn {
             display: inline-block;
-            padding: 14px 28px;
+            padding: 14px 32px;
             font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
             text-decoration: none;
             border-radius: 8px;
@@ -202,7 +194,464 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3), 0 0 15px rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-large {
+            padding: 18px 48px;
+            font-size: 1.1rem;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+            background: radial-gradient(ellipse at center top, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(0, 153, 204, 0.08) 0%, transparent 40%),
+                        radial-gradient(ellipse at 20% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-status {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #606060;
+            margin-bottom: 20px;
+        }
+
+        .hero-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            font-weight: 500;
+            color: #00d4ff;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ========== ABOUT SECTION ========== */
+        .about {
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 212, 255, 0.03) 50%, transparent 100%);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-text {
+            font-size: 1.15rem;
+            color: #b0b0b0;
+            line-height: 1.9;
+        }
+
+        .about-text strong {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .about-closing {
+            display: block;
+            margin-top: 24px;
+            font-size: 1.1rem;
+            color: #d0d0d0;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* ========== FOCUS STRIP SECTION ========== */
+        .focus-strip {
+            background: #080808;
+            padding: 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .focus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .focus-item {
+            padding: 20px;
+        }
+
+        .focus-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #00d4ff;
+            margin-bottom: 12px;
+        }
+
+        .focus-value {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* ========== TECH STACK SECTION ========== */
+        .tech-stack {
+            background: #0a0a0a;
+        }
+
+        .stack-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        /* ========== WHAT I BUILD SECTION ========== */
+        .what-i-build {
+            background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 100%);
+        }
+
+        .build-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .build-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .build-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .build-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .build-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .build-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .build-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .build-card p {
+            font-size: 1rem;
+            color: #909090;
+            line-height: 1.7;
+        }
+
+        /* ========== FEATURED PROJECTS SECTION ========== */
+        .featured-projects {
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+        }
+
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .project-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at top left, rgba(0, 212, 255, 0.1) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 212, 255, 0.15);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .project-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .project-card h3 .arrow {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover h3 .arrow {
+            transform: translateX(5px);
+        }
+
+        .project-card p {
+            font-size: 1rem;
+            color: #909090;
+            line-height: 1.7;
+        }
+
+        .project-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #00d4ff;
+            margin-top: 16px;
+        }
+
+        .project-meta {
+            font-size: 0.8rem;
+            color: #505050;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
+        }
+
+        /* ========== SECTION DIVIDER ========== */
+        .section-divider {
+            border: none;
+            height: 1px;
+            max-width: 400px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+            opacity: 0.6;
+        }
+
+        /* ========== CONTACT INTRO ========== */
+        .contact-intro {
+            font-size: 1rem;
+            color: #707070;
+            margin-top: 10px;
+        }
+
+        /* ========== NAV ACTIVE STATE ========== */
+        .nav-link.active {
+            color: #00d4ff;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* ========== CTA PROJECTS SECTION ========== */
+        .cta-projects {
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.08) 0%, transparent 70%);
+            text-align: center;
+            padding: 120px 0;
+        }
+
+        .cta-projects .section-title {
+            margin-bottom: 20px;
+        }
+
+        .cta-description {
+            font-size: 1.15rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* ========== CONTACT SECTION ========== */
+        .contact {
+            background: #0a0a0a;
+        }
+
+        .contact-content {
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 1.15rem;
+            color: #b0b0b0;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            color: #00d4ff;
+        }
+
+        .contact-item a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #00d4ff;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover .contact-icon {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
         }
 
         /* ========== FOOTER ========== */
@@ -225,10 +674,10 @@
 
         .footer-subtext {
             font-size: 0.8rem;
-            color: #404040;
+            color: #353535;
         }
 
-        /* ========== ANIMATIONS ========== */
+        /* ========== SCROLL ANIMATIONS ========== */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -240,6 +689,174 @@
             transform: translateY(0);
         }
 
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            section {
+                padding: 80px 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                max-width: 300px;
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 80px 32px 32px;
+                gap: 24px;
+                transition: right 0.3s ease;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .nav-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
+            }
+
+            .build-cards, .project-cards {
+                gap: 20px;
+            }
+
+            .build-card {
+                padding: 30px 24px;
+            }
+
+            .project-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-item {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .badge {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ========== PROJECT CARD CLICK EFFECT ========== */
+        .project-card:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+
+        /* ========== BACK TO TOP BUTTON ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            color: #00d4ff;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: rgba(0, 212, 255, 0.25);
+            border-color: #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* ========== TRUST STRIP ========== */
+        .trust-strip {
+            padding: 40px 0;
+            background: rgba(0, 212, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .trust-grid {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #707070;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .trust-item:hover {
+            color: #a0a0a0;
+        }
+
+        .trust-item .trust-icon {
+            font-size: 1.1rem;
+        }
+
+        /* ========== HERO ANIMATION ========== */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -251,106 +868,233 @@
             }
         }
 
-        .page-header {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 900px) {
-            .project-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .project-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-card {
-                padding: 28px 24px;
-            }
-
-            .project-name {
-                font-size: 1.5rem;
-            }
-
-            .page-header {
-                padding: 60px 0 40px;
-            }
-
-            .projects-section {
-                padding: 40px 0 80px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 16px;
-            }
-
-            .tech-badge {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
+        .hero-content {
+            animation: fadeInUp 1s ease-out;
         }
     </style>
 </head>
 <body>
 
-    <!-- ========== BACK NAVIGATION ========== -->
-    <nav class="back-nav">
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar" id="navbar">
         <div class="container">
-            <a href="/" class="back-link">
-                <span class="arrow">←</span> Back to Home
-            </a>
+            <a href="#home" class="nav-logo">FakeDevBagus</a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#tech" class="nav-link">Tech</a></li>
+                <li><a href="#work" class="nav-link">Work</a></li>
+                <li><a href="/projects/" class="nav-link highlight">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
-    <!-- ========== PAGE HEADER ========== -->
-    <header class="page-header">
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero" id="home">
         <div class="container">
-            <h1 class="page-title">My Projects</h1>
-            <p class="page-subtitle">A collection of personal tools and applications I've built.</p>
+            <div class="hero-content">
+                <span class="hero-status">Currently building practical system tools & media utilities</span>
+                <h1 class="hero-name">FakeDevBagus</h1>
+                <p class="hero-subtitle">Independent Developer & System Builder</p>
+                <p class="hero-description">
+                    I build practical digital tools, system utilities, and experimental applications 
+                    focused on performance, automation, and real-world use.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/projects/" class="btn btn-primary">View Projects</a>
+                    <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                </div>
+            </div>
         </div>
-    </header>
+    </section>
 
-    <!-- ========== PROJECTS GRID ========== -->
-    <section class="projects-section">
+    <!-- ========== ABOUT SECTION ========== -->
+    <section class="about fade-in" id="about">
         <div class="container">
-            <div class="project-grid">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <p class="about-text">
+                    I'm an independent developer passionate about creating <strong>practical tools</strong> 
+                    and <strong>real-world applications</strong> that solve everyday problems. My focus lies 
+                    in <strong>backend development</strong>, <strong>system optimization</strong>, and building 
+                    efficient solutions that just work.
+                    <br><br>
+                    I enjoy turning complex technical challenges into clean, functional software. From 
+                    <strong>monitoring tools</strong> and <strong>performance utilities</strong> to 
+                    <strong>media processing applications</strong>, I develop personal products that 
+                    prioritize usability, stability, and long-term maintainability.
+                    <span class="about-closing">"I treat every project as a long-term product, focusing on usability, stability, and real-world usefulness."</span>
+                </p>
+            </div>
+        </div>
+    </section>
 
-                <!-- ========== UNIVIDOWN CARD ========== -->
-                <article class="project-card fade-in">
+    <!-- ========== FOCUS STRIP SECTION ========== -->
+    <section class="focus-strip fade-in">
+        <div class="container">
+            <div class="focus-grid">
+                <div class="focus-item">
+                    <p class="focus-label">Focus</p>
+                    <p class="focus-value">Backend Systems</p>
+                </div>
+                <div class="focus-item">
+                    <p class="focus-label">Interest</p>
+                    <p class="focus-value">Performance & Automation</p>
+                </div>
+                <div class="focus-item">
+                    <p class="focus-label">Style</p>
+                    <p class="focus-value">Practical, Product-Oriented</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TRUST STRIP ========== -->
+    <section class="trust-strip fade-in">
+        <div class="container">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <span class="trust-icon">⚙</span>
+                    <span>Built as real working tools</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🚀</span>
+                    <span>Performance-focused engineering</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🧩</span>
+                    <span>Product-oriented development</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TECH STACK SECTION ========== -->
+    <section class="tech-stack fade-in" id="tech">
+        <div class="container">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="stack-badges">
+                <span class="badge">Node.js</span>
+                <span class="badge">Express</span>
+                <span class="badge">Python</span>
+                <span class="badge">FFmpeg</span>
+                <span class="badge">Linux</span>
+                <span class="badge">Docker</span>
+                <span class="badge">Git</span>
+                <span class="badge">HTML</span>
+                <span class="badge">CSS</span>
+                <span class="badge">JavaScript</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== WHAT I BUILD SECTION ========== -->
+    <section class="what-i-build fade-in" id="work">
+        <div class="container">
+            <h2 class="section-title">What I Build</h2>
+            <div class="build-cards">
+                <div class="build-card">
+                    <span class="build-icon">🖥</span>
+                    <h3>System Tools</h3>
+                    <p>Monitoring systems, performance tools, and backend utilities.</p>
+                </div>
+                <div class="build-card">
+                    <span class="build-icon">🌐</span>
+                    <h3>Web Applications</h3>
+                    <p>Interactive web-based tools and dashboards.</p>
+                </div>
+                <div class="build-card">
+                    <span class="build-icon">⚙</span>
+                    <h3>Experimental Projects</h3>
+                    <p>Personal tools, automation scripts, and digital experiments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HOW I WORK SECTION ========== -->
+    <section class="what-i-build fade-in" id="process">
+        <div class="container">
+            <h2 class="section-title">How I Work</h2>
+            <div class="build-cards">
+                <div class="build-card">
+                    <span class="build-icon">🧠</span>
+                    <h3>Problem-Driven</h3>
+                    <p>I build tools to solve real operational or workflow problems.</p>
+                </div>
+                <div class="build-card">
+                    <span class="build-icon">⚡</span>
+                    <h3>Performance First</h3>
+                    <p>I focus on speed, efficiency, and resource-aware systems.</p>
+                </div>
+                <div class="build-card">
+                    <span class="build-icon">🛠</span>
+                    <h3>Built to Last</h3>
+                    <p>I prefer maintainable architectures over quick hacks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURED PROJECTS SECTION ========== -->
+    <section class="featured-projects fade-in" id="featured">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="project-cards">
+                <a href="/projects/unividown.html" class="project-card">
                     <div class="project-card-content">
-                        <h2 class="project-name">UniviDown</h2>
-                        <p class="project-description">
-                            Universal media downloader with smart quality detection and multi-platform support.
-                        </p>
-                        <div class="tech-badges">
-                            <span class="tech-badge">Node.js</span>
-                            <span class="tech-badge">FFmpeg</span>
-                            <span class="tech-badge">yt-dlp</span>
-                        </div>
-                        <a href="/projects/unividown.html" class="btn btn-primary">View Details</a>
+                        <h3>UniviDown <span class="arrow">→</span></h3>
+                        <p>Universal media downloader with smart quality detection and multi-platform support.</p>
+                        <span class="project-tag">Media Tool</span>
+                        <p class="project-meta">Personal Product • Media Utility</p>
                     </div>
-                </article>
-
-                <!-- ========== TOPMONITORING CARD ========== -->
-                <article class="project-card fade-in">
+                </a>
+                <a href="/projects/topmonitoring.html" class="project-card">
                     <div class="project-card-content">
-                        <h2 class="project-name">TopMonitoring</h2>
-                        <p class="project-description">
-                            Real-time system monitoring tool focused on performance tracking and stability.
-                        </p>
-                        <div class="tech-badges">
-                            <span class="tech-badge">Node.js</span>
-                            <span class="tech-badge">System Monitoring</span>
-                        </div>
-                        <a href="/projects/topmonitoring.html" class="btn btn-primary">View Details</a>
+                        <h3>TopMonitoring <span class="arrow">→</span></h3>
+                        <p>Real-time system monitoring tool focused on performance tracking and stability.</p>
+                        <span class="project-tag">System Utility</span>
+                        <p class="project-meta">System Tool • Performance Monitoring</p>
                     </div>
-                </article>
+                </a>
+            </div>
+        </div>
+    </section>
 
+    <hr class="section-divider">
+
+    <!-- ========== CTA PROJECTS SECTION ========== -->
+    <section class="cta-projects fade-in" id="projects">
+        <div class="container">
+            <h2 class="section-title">Explore My Work</h2>
+            <p class="cta-description">
+                Take a look at the projects I've built, from system tools to modern media applications.
+            </p>
+            <a href="/projects/" class="btn btn-primary btn-large">View All Projects</a>
+        </div>
+    </section>
+
+    <!-- ========== CONTACT SECTION ========== -->
+    <section class="contact fade-in" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <p class="contact-intro">Open for collaboration & interesting technical projects.</p>
+                <div class="contact-links">
+                    <div class="contact-item">
+                        <div class="contact-icon">✉</div>
+                        <a href="mailto:fakedevbagus@email.com">fakedevbagus@email.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">⌨</div>
+                        <a href="https://github.com/fakedevbagus" target="_blank" rel="noopener noreferrer">github.com/fakedevbagus</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -362,11 +1106,54 @@
                 © 2026 <span>FakeDevBagus</span> — Built with passion for building useful software.
             </p>
             <p class="footer-subtext">Designed & developed personally.</p>
+            <p class="footer-subtext">Version 1.0 • Last updated 2026</p>
         </div>
     </footer>
 
     <!-- ========== JAVASCRIPT ========== -->
     <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        navToggle.addEventListener('click', () => {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
         // Fade-in animation on scroll
         const fadeElements = document.querySelectorAll('.fade-in');
 
@@ -384,7 +1171,48 @@
         fadeElements.forEach(element => {
             fadeInObserver.observe(element);
         });
+
+        // Scroll spy — highlight active nav link
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+
+        const spyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, {
+            threshold: 0.3,
+            rootMargin: '-80px 0px -40% 0px'
+        });
+
+        sections.forEach(section => {
+            spyObserver.observe(section);
+        });
+
+        // Back to Top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     </script>
+
+    <!-- ========== BACK TO TOP ========== -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
 </body>
 </html>

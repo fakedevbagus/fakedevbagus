@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopMonitoring — Real-time Windows Hardware Overlay</title>
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <meta name="description" content="FakeDevBagus — Independent developer building system tools, performance utilities, and practical software products.">
+    <meta property="og:title" content="FakeDevBagus — Developer Portfolio">
+    <meta property="og:description" content="System tools, monitoring utilities, and media software projects.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/assets/preview.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET & BASE ========== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ========== UTILITY ========== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            margin-top: 14px;
+            border-radius: 2px;
+        }
+
+        /* ========== BACK NAVIGATION ========== */
+        .back-nav {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #a0a0a0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #00d4ff;
+        }
+
+        .back-link .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover .arrow {
+            transform: translateX(-4px);
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #0a0a0a;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* ========== PROJECT HEADER ========== */
+        .project-header {
+            padding: 80px 0 60px;
+            background: radial-gradient(ellipse at center top, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .project-header-content {
+            max-width: 800px;
+        }
+
+        .project-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .project-name {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .project-tagline {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 32px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .release-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #606060;
+        }
+
+        .release-info .version-tag {
+            padding: 3px 10px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            color: #00d4ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        /* ========== SCREENSHOTS SECTION ========== */
+        .screenshots {
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.02), transparent);
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .screenshot-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s ease;
+        }
+
+        .screenshot-item:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #111111;
+        }
+
+        .screenshot-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #c0c0c0;
+        }
+
+        .screenshot-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features {
+            background: #0a0a0a;
+        }
+
+        .feature-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 10px;
+        }
+
+        .feature-group {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.4s ease;
+        }
+
+        .feature-group:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .feature-group h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-group h3 .icon {
+            font-size: 1.3rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            font-size: 0.95rem;
+            color: #a0a0a0;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.6;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #00d4ff;
+            font-size: 0.85rem;
+        }
+
+        /* ========== TECH STACK SECTION ========== */
+        .tech-section {
+            background: linear-gradient(180deg, #0a0a0a, #0f0f0f);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        /* ========== REQUIREMENTS ========== */
+        .requirements {
+            background: #0a0a0a;
+        }
+
+        .req-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .req-list li {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #b0b0b0;
+        }
+
+        /* ========== DOWNLOAD SECTION ========== */
+        .download-section {
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+            text-align: center;
+            padding: 100px 0;
+        }
+
+        .download-section .section-title {
+            text-align: center;
+        }
+
+        .download-section .section-title::after {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-description {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            max-width: 550px;
+            margin: 0 auto 36px;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .download-note {
+            font-size: 0.8rem;
+            color: #505050;
+            margin-top: 16px;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            background: #080808;
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            color: #606060;
+            margin-bottom: 8px;
+        }
+
+        .footer-text span {
+            color: #00d4ff;
+        }
+
+        .footer-subtext {
+            font-size: 0.8rem;
+            color: #353535;
+        }
+
+        /* ========== PROJECT INFO BAR ========== */
+        .project-info-bar {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+            padding: 24px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .project-info-bar .container {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .info-item .info-label {
+            color: #505050;
+            font-weight: 500;
+        }
+
+        .info-item .info-value {
+            color: #b0b0b0;
+            font-weight: 600;
+        }
+
+        /* ========== SCREENSHOT ZOOM EFFECT ========== */
+        .screenshot-item img {
+            transition: transform 0.4s ease;
+        }
+
+        .screenshot-item:hover img {
+            transform: scale(1.03);
+        }
+
+        /* ========== GRADIENT DIVIDER ========== */
+        .section-divider {
+            border: none;
+            height: 1px;
+            max-width: 400px;
+            margin: 0 auto;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+            opacity: 0.6;
+        }
+
+        /* ========== BACK TO TOP BUTTON ========== */
+        .back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            color: #00d4ff;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background: rgba(0, 212, 255, 0.25);
+            border-color: #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* ========== ANIMATIONS ========== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-header-content {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            section {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+            }
+
+            .project-header {
+                padding: 60px 0 40px;
+            }
+
+            .header-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
+            }
+
+            .screenshot-row {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-groups {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .project-description {
+                font-size: 1rem;
+            }
+
+            .tech-badge {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+
+            .feature-group {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== BACK NAVIGATION ========== -->
+    <nav class="back-nav">
+        <div class="container">
+            <a href="/projects/" class="back-link">
+                <span class="arrow">←</span> Back to Projects
+            </a>
+        </div>
+    </nav>
+
+    <!-- ========== PROJECT HEADER ========== -->
+    <header class="project-header">
+        <div class="container">
+            <div class="project-header-content">
+                <span class="project-badge">System Utility • Open Source</span>
+                <h1 class="project-name">TopMonitoring</h1>
+                <p class="project-tagline">Windows hardware real-time overlay</p>
+                <p class="project-description">
+                    A lightweight Windows overlay to display real-time hardware metrics such as 
+                    CPU, GPU, RAM, Disk, and Network. Built with WPF and LibreHardwareMonitor. 
+                    Designed for minimal distraction: always-on-top, compact, customizable, and fast.
+                </p>
+                <div class="header-buttons">
+                    <a href="https://github.com/fakedevbagus/TopMonitoring" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View on GitHub</a>
+                    <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-secondary">Download Portable</a>
+                </div>
+                <div class="release-info">
+                    <span class="version-tag">v1.1.0</span>
+                    Latest Stable Release — Portable .exe included
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== PROJECT INFO BAR ========== -->
+    <div class="project-info-bar">
+        <div class="container">
+            <div class="info-item">
+                <span class="info-label">Status:</span>
+                <span class="info-value">Active Development</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Type:</span>
+                <span class="info-value">System Tool</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Platform:</span>
+                <span class="info-value">Desktop / Windows</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SCREENSHOTS SECTION ========== -->
+    <section class="screenshots fade-in">
+        <div class="container">
+            <h2 class="section-title">Screenshots</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/dock.PNG" alt="TopMonitoring Overlay Dock" loading="lazy">
+                    <div class="screenshot-label">Overlay Dock — Always-on-top compact bar</div>
+                </div>
+                <div class="screenshot-row">
+                    <div class="screenshot-item">
+                        <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/darktheme.PNG" alt="TopMonitoring Dark Theme" loading="lazy">
+                        <div class="screenshot-label">Dark Theme</div>
+                    </div>
+                    <div class="screenshot-item">
+                        <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/lighttheme.PNG" alt="TopMonitoring Light Theme" loading="lazy">
+                        <div class="screenshot-label">Light Theme</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURES SECTION ========== -->
+    <section class="features fade-in">
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="feature-groups">
+
+                <div class="feature-group">
+                    <h3><span class="icon">🖥</span> Overlay / Dock</h3>
+                    <ul class="feature-list">
+                        <li>Always-on-top top bar overlay (minimal distraction)</li>
+                        <li>Transparent dock background support</li>
+                        <li>Fixed metric order (MSI Afterburner-style layout)</li>
+                        <li>Clean centered metric value alignment</li>
+                        <li>Safe N/A fallback when sensor data unavailable</li>
+                    </ul>
+                </div>
+
+                <div class="feature-group">
+                    <h3><span class="icon">📊</span> Real-time Metrics</h3>
+                    <ul class="feature-list">
+                        <li>CPU Load / Temperature / Power</li>
+                        <li>GPU Load / Temperature / Power</li>
+                        <li>VRAM Used</li>
+                        <li>RAM Used / RAM Free</li>
+                        <li>Disk usage</li>
+                        <li>Network throughput (Down / Up)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-group">
+                    <h3><span class="icon">⚙</span> Settings & Customization</h3>
+                    <ul class="feature-list">
+                        <li>Dark / Light mode theme toggle</li>
+                        <li>Adjustable background opacity with live slider</li>
+                        <li>Background color picker + HEX input</li>
+                        <li>Customizable metric labels (prefix renaming)</li>
+                        <li>Enable / disable individual metrics in real-time</li>
+                        <li>Metric order editor (Up / Down reorder)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-group">
+                    <h3><span class="icon">✅</span> Quality & Stability</h3>
+                    <ul class="feature-list">
+                        <li>Stable, optimized update loop</li>
+                        <li>Autosave settings — no manual save needed</li>
+                        <li>Safe fallback: missing sensor returns N/A</li>
+                        <li>Lightweight WPF overlay with minimal resource usage</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TECH STACK ========== -->
+    <section class="tech-section fade-in">
+        <div class="container">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="tech-badges">
+                <span class="tech-badge">▹ C#</span>
+                <span class="tech-badge">▹ .NET 8</span>
+                <span class="tech-badge">▹ WPF</span>
+                <span class="tech-badge">▹ LibreHardwareMonitor</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== REQUIREMENTS ========== -->
+    <section class="requirements fade-in">
+        <div class="container">
+            <h2 class="section-title">Requirements</h2>
+            <ul class="req-list">
+                <li>Windows 10 / 11</li>
+                <li>.NET SDK 8 (for building from source)</li>
+                <li>LibreHardwareMonitor (included as dependency)</li>
+            </ul>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ========== DOWNLOAD SECTION ========== -->
+    <section class="download-section fade-in">
+        <div class="container">
+            <h2 class="section-title">Download TopMonitoring</h2>
+            <p class="download-description">
+                Get the latest stable release. Extract the zip and run — no installation needed.
+            </p>
+            <div class="download-buttons">
+                <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-primary">Download Portable v1.1.0</a>
+                <a href="https://github.com/fakedevbagus/TopMonitoring/releases" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">All Releases</a>
+            </div>
+            <p class="download-note">Portable .exe — no installer required. Run as administrator for full sensor access.</p>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">
+                © 2026 <span>FakeDevBagus</span> — Built with passion for building useful software.
+            </p>
+            <p class="footer-subtext">Designed & developed personally.</p>
+            <p class="footer-subtext">Version 1.0 • Last updated 2026</p>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script>
+        // Fade-in animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        fadeElements.forEach(element => {
+            fadeInObserver.observe(element);
+        });
+
+        // Back to Top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+    <!-- ========== BACK TO TOP ========== -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+</body>
+</html>
