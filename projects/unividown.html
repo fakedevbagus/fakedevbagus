@@ -152,12 +152,27 @@
             margin-bottom: 20px;
         }
 
+        .project-name-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 12px;
+        }
+
+        .project-name-row .project-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 14px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 4px 16px rgba(0, 212, 255, 0.25));
+        }
+
         .project-name {
             font-family: 'Poppins', sans-serif;
             font-size: clamp(2.5rem, 6vw, 3.5rem);
             font-weight: 800;
             letter-spacing: -1px;
-            margin-bottom: 12px;
             background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -766,7 +781,10 @@
         <div class="container">
             <div class="project-header-content">
                 <span class="project-badge">Personal Product • Media Utility</span>
-                <h1 class="project-name">UniviDown</h1>
+                <div class="project-name-row">
+                    <img src="/assets/unividown/logouniversaldown.png" alt="UniviDown Logo" class="project-logo" loading="lazy">
+                    <h1 class="project-name">UniviDown</h1>
+                </div>
                 <p class="project-tagline">Universal Media Downloader</p>
                 <p class="project-description">
                     A powerful cross-platform media downloader that supports high-quality video and audio 
@@ -808,30 +826,18 @@
         <div class="container">
             <h2 class="section-title">Preview</h2>
             <div class="screenshot-grid">
-                <div class="screenshot-placeholder">
-                    <div class="preview-hero">
-                        <img src="https://raw.githubusercontent.com/fakedevbagus/unividown/main/public/assets/logouniversaldown.png" alt="UniviDown Logo" loading="lazy">
-                        <div class="preview-hero-text">
-                            <strong>UniviDown Interface</strong>
-                            <span>Modern web-based downloader UI with glassmorphism design,<br>
-                            platform-based dynamic themes, and real-time progress tracking.</span>
-                        </div>
-                    </div>
+                <div class="screenshot-item">
+                    <img src="/assets/unividown/unividowninterface.png" alt="UniviDown Interface" loading="lazy">
+                    <div class="screenshot-label">UniviDown Interface — Glassmorphism design with dynamic themes</div>
                 </div>
                 <div class="screenshot-row">
-                    <div class="screenshot-placeholder">
-                        <div>
-                            <span class="icon">📊</span>
-                            <strong>Smart Resolution Detection</strong><br>
-                            Auto-detects available qualities before download
-                        </div>
+                    <div class="screenshot-item">
+                        <img src="/assets/unividown/autodetectunividown.png" alt="Smart Resolution Detection" loading="lazy">
+                        <div class="screenshot-label">Smart Resolution Detection</div>
                     </div>
-                    <div class="screenshot-placeholder">
-                        <div>
-                            <span class="icon">📁</span>
-                            <strong>Built-in File Manager</strong><br>
-                            Browse and manage completed downloads
-                        </div>
+                    <div class="screenshot-item">
+                        <img src="/assets/unividown/filesunividown.png" alt="Built-in File Manager" loading="lazy">
+                        <div class="screenshot-label">Built-in File Manager</div>
                     </div>
                 </div>
             </div>
