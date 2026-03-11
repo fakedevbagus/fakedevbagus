@@ -5,642 +5,323 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TopMonitoring — Real-time Windows Hardware Overlay</title>
     <link rel="icon" type="image/png" href="/assets/logo.png">
-    <meta name="description" content="FakeDevBagus — Independent developer building system tools, performance utilities, and practical software products.">
-    <meta property="og:title" content="FakeDevBagus — Developer Portfolio">
-    <meta property="og:description" content="System tools, monitoring utilities, and media software projects.">
+    <meta name="description" content="TopMonitoring — Real-time Windows hardware overlay for CPU, GPU, RAM monitoring. Built by FakeDevBagus.">
+    <meta property="og:title" content="TopMonitoring — Real-time Hardware Overlay">
+    <meta property="og:description" content="Lightweight Windows overlay for real-time hardware metrics.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/assets/preview.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ========== RESET & BASE ========== */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ══════════ DESIGN SYSTEM v2.0 ══════════ */
+        :root {
+            --bg: #050505;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(0,212,255,0.35);
+            --accent: #00d4ff;
+            --accent-dim: rgba(0,212,255,0.12);
+            --accent-glow: rgba(0,212,255,0.3);
+            --text-1: #ffffff;
+            --text-2: #b0b0b0;
+            --text-3: #707070;
+            --text-4: #404040;
+            --glass: rgba(255,255,255,0.03);
+            --glass-border: rgba(255,255,255,0.06);
+            --blur: blur(16px);
+            --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --r-sm: 8px;
+            --r-md: 16px;
+            --r-lg: 24px;
+            --r-pill: 100px;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(180deg, #0a0a0a 0%, #0f0f0f 50%, #0a0a0a 100%);
-            color: #e0e0e0;
-            line-height: 1.7;
-            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: #e0e0e0; line-height: 1.7; overflow-x: hidden;
         }
 
-        /* ========== UTILITY ========== */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 24px;
+        /* ── Glowing Orbs ── */
+        body::before {
+            content: ''; position: fixed; inset: 0;
+            background:
+                radial-gradient(800px circle at 25% 15%, rgba(0,212,255,0.07), transparent 60%),
+                radial-gradient(600px circle at 75% 60%, rgba(0,153,204,0.05), transparent 50%),
+                radial-gradient(400px circle at 50% 90%, rgba(0,212,255,0.03), transparent 50%);
+            pointer-events: none; z-index: 0;
+            animation: orbDrift 15s ease-in-out infinite alternate;
+        }
+        @keyframes orbDrift { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        /* ── Scroll Progress ── */
+        .scroll-progress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+            background: linear-gradient(90deg, var(--accent), #0099cc);
+            z-index: 10000; box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        section {
-            padding: 80px 0;
-        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        section { padding: 100px 0; position: relative; z-index: 1; }
 
+        /* ── Section Title ── */
+        .section-label {
+            font-size: clamp(0.65rem, 1.2vw, 0.75rem); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 4px; color: var(--accent);
+            margin-bottom: 14px; display: block;
+        }
         .section-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 40px;
-            position: relative;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 800; color: var(--text-1); margin-bottom: 40px;
+            letter-spacing: -0.5px; line-height: 1.2; position: relative;
         }
-
         .section-title::after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #0099cc);
-            margin-top: 14px;
-            border-radius: 2px;
+            content: ''; display: block; width: 50px; height: 3px;
+            background: linear-gradient(90deg, var(--accent), #0099cc);
+            margin-top: 16px; border-radius: 2px;
         }
 
-        /* ========== BACK NAVIGATION ========== */
+        /* ── Back Nav ── */
         .back-nav {
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px 0; position: relative; z-index: 2;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: rgba(5,5,5,0.6); backdrop-filter: blur(20px);
         }
-
         .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #a0a0a0;
-            text-decoration: none;
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.9rem; font-weight: 500; color: var(--text-3);
+            text-decoration: none; transition: all 0.3s;
         }
+        .back-link:hover { color: var(--accent); }
+        .back-link .arrow { transition: transform 0.3s var(--spring); }
+        .back-link:hover .arrow { transform: translateX(-5px); }
 
-        .back-link:hover {
-            color: #00d4ff;
-        }
-
-        .back-link .arrow {
-            transition: transform 0.3s ease;
-        }
-
-        .back-link:hover .arrow {
-            transform: translateX(-4px);
-        }
-
-        /* ========== BUTTONS ========== */
+        /* ── Buttons ── */
         .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 14px 36px; font-family: 'Inter', sans-serif;
+            font-size: 0.95rem; font-weight: 600; text-decoration: none;
+            border-radius: var(--r-pill); transition: all 0.4s var(--spring);
+            cursor: pointer; border: none;
         }
-
         .btn-primary {
-            background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #0a0a0a;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+            background: linear-gradient(135deg, var(--accent), #0099cc);
+            color: var(--bg); box-shadow: 0 4px 24px var(--accent-glow);
         }
+        .btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 40px rgba(0,212,255,0.5); }
+        .btn-primary:active { transform: translateY(0) scale(0.97); }
+        .btn-secondary { background: transparent; color: var(--accent); border: 1.5px solid rgba(0,212,255,0.3); }
+        .btn-secondary:hover { background: var(--accent-dim); border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,212,255,0.2); }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 40px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.3);
-        }
+        /* ── Project Header ── */
+        .project-header { padding: 80px 0 60px; position: relative; z-index: 1; }
+        .project-header-content { max-width: 800px; }
 
-        .btn-secondary {
-            background: transparent;
-            color: #00d4ff;
-            border: 2px solid rgba(0, 212, 255, 0.5);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: #00d4ff;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        /* ========== PROJECT HEADER ========== */
-        .project-header {
-            padding: 80px 0 60px;
-            background: radial-gradient(ellipse at center top, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
-        }
-
-        .project-header-content {
-            max-width: 800px;
-        }
+        @keyframes headerEnter { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .project-header-content > * { opacity: 0; animation: headerEnter 0.8s var(--expo) forwards; }
+        .project-header-content > *:nth-child(1) { animation-delay: 0.05s; }
+        .project-header-content > *:nth-child(2) { animation-delay: 0.15s; }
+        .project-header-content > *:nth-child(3) { animation-delay: 0.25s; }
+        .project-header-content > *:nth-child(4) { animation-delay: 0.35s; }
+        .project-header-content > *:nth-child(5) { animation-delay: 0.45s; }
+        .project-header-content > *:nth-child(6) { animation-delay: 0.55s; }
+        .project-header-content > *:nth-child(7) { animation-delay: 0.65s; }
 
         .project-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #00d4ff;
-            margin-bottom: 20px;
+            display: inline-block; padding: 6px 18px;
+            background: var(--accent-dim); border: 1px solid rgba(0,212,255,0.25);
+            border-radius: var(--r-pill); font-size: 0.78rem; font-weight: 600;
+            color: var(--accent); margin-bottom: 20px;
         }
-
-        .project-name-row {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 12px;
-        }
-
+        .project-name-row { display: flex; align-items: center; gap: 20px; margin-bottom: 12px; }
         .project-name-row .project-logo {
-            width: 64px;
-            height: 64px;
-            object-fit: contain;
-            border-radius: 14px;
-            flex-shrink: 0;
-            filter: drop-shadow(0 4px 16px rgba(0, 212, 255, 0.25));
+            width: 64px; height: 64px; object-fit: contain; border-radius: 16px; flex-shrink: 0;
+            filter: drop-shadow(0 4px 20px rgba(0,212,255,0.25));
         }
-
         .project-name {
             font-family: 'Poppins', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 3.5rem);
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #ffffff 0%, #00d4ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-
-        .project-tagline {
-            font-size: 1.2rem;
-            color: #00d4ff;
-            font-weight: 500;
-            margin-bottom: 16px;
-        }
-
-        .project-description {
-            font-size: 1.1rem;
-            color: #a0a0a0;
-            line-height: 1.8;
-            max-width: 700px;
-            margin-bottom: 32px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+        .project-tagline { font-size: 1.15rem; color: var(--accent); font-weight: 500; margin-bottom: 16px; }
+        .project-description { font-size: clamp(1rem, 1.6vw, 1.1rem); color: var(--text-2); line-height: 1.9; max-width: 680px; margin-bottom: 32px; }
+        .header-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
 
         .release-info {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #606060;
+            display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
+            font-size: 0.83rem; color: var(--text-4);
         }
-
         .release-info .version-tag {
-            padding: 3px 10px;
-            background: rgba(0, 212, 255, 0.08);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            color: #00d4ff;
-            font-weight: 600;
-            font-size: 0.8rem;
+            padding: 4px 12px; background: var(--accent-dim);
+            border: 1px solid rgba(0,212,255,0.2); border-radius: var(--r-pill);
+            color: var(--accent); font-weight: 700; font-size: 0.78rem;
         }
-
-        /* ========== SCREENSHOTS SECTION ========== */
-        .screenshots {
-            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.02), transparent);
+        .release-info .skeleton {
+            display: inline-block; width: 80px; height: 20px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%; animation: skeletonPulse 1.5s ease-in-out infinite;
+            border-radius: var(--r-pill);
         }
+        @keyframes skeletonPulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        .screenshot-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-top: 30px;
-        }
-
-        .screenshot-item {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.4s ease;
-        }
-
-        .screenshot-item:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.1);
-            transform: translateY(-4px);
-        }
-
-        .screenshot-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            background: #111111;
-        }
-
-        .screenshot-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 12px 20px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #c0c0c0;
-        }
-
-        .screenshot-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        /* ========== FEATURES SECTION ========== */
-        .features {
-            background: #0a0a0a;
-        }
-
-        .feature-groups {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 10px;
-        }
-
-        .feature-group {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.4s ease;
-        }
-
-        .feature-group:hover {
-            border-color: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transform: translateY(-4px);
-        }
-
-        .feature-group h3 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feature-group h3 .icon {
-            font-size: 1.3rem;
-        }
-
-        .feature-list {
-            list-style: none;
-        }
-
-        .feature-list li {
-            font-size: 0.95rem;
-            color: #a0a0a0;
-            padding: 8px 0;
-            padding-left: 20px;
-            position: relative;
-            line-height: 1.6;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .feature-list li:last-child {
-            border-bottom: none;
-        }
-
-        .feature-list li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: #00d4ff;
-            font-size: 0.85rem;
-        }
-
-        /* ========== TECH STACK SECTION ========== */
-        .tech-section {
-            background: linear-gradient(180deg, #0a0a0a, #0f0f0f);
-        }
-
-        .tech-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-top: 10px;
-        }
-
-        .tech-badge {
-            display: inline-block;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #e0e0e0;
-            transition: all 0.3s ease;
-        }
-
-        .tech-badge:hover {
-            background: rgba(0, 212, 255, 0.15);
-            border-color: rgba(0, 212, 255, 0.4);
-            color: #00d4ff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
-        }
-
-        /* ========== REQUIREMENTS ========== */
-        .requirements {
-            background: #0a0a0a;
-        }
-
-        .req-list {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 10px;
-        }
-
-        .req-list li {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            color: #b0b0b0;
-        }
-
-        /* ========== DOWNLOAD SECTION ========== */
-        .download-section {
-            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
-            text-align: center;
-            padding: 100px 0;
-        }
-
-        .download-section .section-title {
-            text-align: center;
-        }
-
-        .download-section .section-title::after {
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .download-description {
-            font-size: 1.1rem;
-            color: #a0a0a0;
-            max-width: 550px;
-            margin: 0 auto 36px;
-        }
-
-        .download-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .download-note {
-            font-size: 0.8rem;
-            color: #505050;
-            margin-top: 16px;
-        }
-
-        /* ========== FOOTER ========== */
-        .footer {
-            background: #080808;
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-text {
-            font-size: 0.95rem;
-            color: #606060;
-            margin-bottom: 8px;
-        }
-
-        .footer-text span {
-            color: #00d4ff;
-        }
-
-        .footer-subtext {
-            font-size: 0.8rem;
-            color: #353535;
-        }
-
-        /* ========== PROJECT INFO BAR ========== */
+        /* ── Project Info Bar ── */
         .project-info-bar {
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
-            padding: 24px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(255, 255, 255, 0.01);
+            padding: 20px 0; position: relative; z-index: 1;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.01);
         }
+        .project-info-bar .container { display: flex; gap: 32px; flex-wrap: wrap; }
+        .info-item { display: flex; align-items: center; gap: 8px; font-size: 0.83rem; }
+        .info-item .info-label { color: var(--text-4); font-weight: 500; }
+        .info-item .info-value { color: var(--text-2); font-weight: 600; }
 
-        .project-info-bar .container {
-            display: flex;
-            gap: 32px;
-            flex-wrap: wrap;
+        /* ── Screenshots ── */
+        .screenshot-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 28px; }
+        .screenshot-item {
+            position: relative; border-radius: var(--r-md); overflow: hidden;
+            border: 1px solid var(--glass-border); background: #0a0a0a;
+            transition: all 0.4s var(--spring);
         }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+        .screenshot-item:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 16px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0,212,255,0.08);
+            transform: translateY(-6px) scale(1.01);
         }
-
-        .info-item .info-label {
-            color: #505050;
-            font-weight: 500;
+        .screenshot-item img { width: 100%; height: auto; display: block; transition: transform 0.5s var(--expo); }
+        .screenshot-item:hover img { transform: scale(1.04); }
+        .screenshot-label {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 14px 20px; background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            font-size: 0.83rem; font-weight: 500; color: #c0c0c0;
         }
+        .screenshot-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        .info-item .info-value {
-            color: #b0b0b0;
-            font-weight: 600;
+        /* ── Features ── */
+        .feature-groups {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px; margin-top: 10px;
         }
-
-        /* ========== SCREENSHOT ZOOM EFFECT ========== */
-        .screenshot-item img {
-            transition: transform 0.4s ease;
+        .feature-group {
+            background: var(--glass); backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border); border-radius: var(--r-md);
+            padding: 32px; transition: all 0.4s var(--spring);
         }
-
-        .screenshot-item:hover img {
-            transform: scale(1.03);
+        .feature-group:hover {
+            border-color: var(--border-hover); transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.3), 0 0 30px rgba(0,212,255,0.05);
         }
-
-        /* ========== GRADIENT DIVIDER ========== */
-        .section-divider {
-            border: none;
-            height: 1px;
-            max-width: 400px;
-            margin: 0 auto;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
-            opacity: 0.6;
+        .feature-group h3 {
+            font-family: 'Poppins', sans-serif; font-size: 1.1rem; font-weight: 700;
+            color: var(--text-1); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
         }
+        .feature-group h3 .icon { font-size: 1.2rem; }
+        .feature-list { list-style: none; }
+        .feature-list li {
+            font-size: 0.9rem; color: var(--text-2); padding: 8px 0 8px 20px;
+            position: relative; line-height: 1.6;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.8rem; }
 
-        /* ========== BACK TO TOP BUTTON ========== */
+        /* ── Tech Badges ── */
+        .tech-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+        .tech-badge {
+            padding: 12px 24px; background: var(--glass); backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border); border-radius: var(--r-pill);
+            font-size: 0.9rem; font-weight: 500; color: #d0d0d0;
+            transition: all 0.4s var(--spring);
+        }
+        .tech-badge:hover { background: var(--accent-dim); border-color: var(--border-hover); color: var(--accent); transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 24px rgba(0,212,255,0.15); }
+
+        /* ── Requirements ── */
+        .req-list {
+            list-style: none; display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px;
+        }
+        .req-list li {
+            padding: 10px 22px; background: var(--glass);
+            border: 1px solid var(--glass-border); border-radius: var(--r-sm);
+            font-size: 0.88rem; color: var(--text-2);
+            transition: all 0.3s var(--spring);
+        }
+        .req-list li:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+
+        /* ── Download Section ── */
+        .download-section { text-align: center; padding: 120px 0; position: relative; z-index: 1; }
+        .download-section .section-title { text-align: center; }
+        .download-section .section-title::after { margin-left: auto; margin-right: auto; }
+        .download-description { font-size: clamp(1rem, 1.6vw, 1.1rem); color: var(--text-2); max-width: 520px; margin: 0 auto 36px; }
+        .download-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .download-note { font-size: 0.78rem; color: var(--text-4); margin-top: 16px; }
+
+        /* ── Divider ── */
+        .section-divider { border: none; height: 1px; max-width: 300px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--accent-glow), transparent); opacity: 0.5; position: relative; z-index: 1; }
+
+        /* ── Footer ── */
+        .footer { background: rgba(5,5,5,0.8); padding: 44px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.04); position: relative; z-index: 1; }
+        .footer-text { font-size: 0.9rem; color: var(--text-4); margin-bottom: 6px; }
+        .footer-text span { color: var(--accent); }
+        .footer-subtext { font-size: 0.75rem; color: #303030; }
+
+        /* ── Back to Top ── */
         .back-to-top {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            width: 48px;
-            height: 48px;
-            background: rgba(0, 212, 255, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 50%;
-            color: #00d4ff;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 999;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            position: fixed; bottom: 32px; right: 32px; width: 48px; height: 48px;
+            background: var(--accent-dim); backdrop-filter: var(--blur);
+            border: 1px solid rgba(0,212,255,0.25); border-radius: 50%;
+            color: var(--accent); font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            opacity: 0; visibility: hidden; transform: translateY(16px);
+            transition: all 0.4s var(--spring); z-index: 999;
         }
+        .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { background: rgba(0,212,255,0.25); border-color: var(--accent); box-shadow: 0 4px 24px var(--accent-glow); transform: translateY(-4px) scale(1.1); }
 
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+        /* ── Reveal ── */
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--expo), transform 0.8s var(--expo); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .stagger-child { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--expo), transform 0.6s var(--expo); }
+        .stagger-child.visible { opacity: 1; transform: translateY(0); }
 
-        .back-to-top:hover {
-            background: rgba(0, 212, 255, 0.25);
-            border-color: #00d4ff;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
-            transform: translateY(-3px);
-        }
-
-        /* ========== ANIMATIONS ========== */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .project-header-content {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        /* ========== RESPONSIVE ========== */
+        /* ── Responsive ── */
         @media (max-width: 768px) {
-            section {
-                padding: 60px 0;
-            }
-
-            .section-title {
-                font-size: 1.7rem;
-            }
-
-            .project-header {
-                padding: 60px 0 40px;
-            }
-
-            .header-buttons {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 280px;
-                text-align: center;
-            }
-
-            .screenshot-row {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-groups {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .download-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
+            section { padding: 70px 0; }
+            .project-header { padding: 60px 0 40px; }
+            .header-buttons { flex-direction: column; align-items: flex-start; }
+            .btn { width: 100%; max-width: 280px; text-align: center; }
+            .screenshot-row { grid-template-columns: 1fr; }
+            .feature-groups { grid-template-columns: 1fr; }
+            .download-buttons { flex-direction: column; align-items: center; }
         }
-
         @media (max-width: 480px) {
-            .container {
-                padding: 0 16px;
-            }
-
-            .project-description {
-                font-size: 1rem;
-            }
-
-            .tech-badge {
-                padding: 10px 18px;
-                font-size: 0.9rem;
-            }
-
-            .feature-group {
-                padding: 24px 20px;
-            }
+            .container { padding: 0 16px; }
+            .project-name-row { gap: 14px; }
+            .project-name-row .project-logo { width: 48px; height: 48px; }
+            .feature-group { padding: 24px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ========== BACK NAVIGATION ========== -->
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Back Navigation -->
     <nav class="back-nav">
         <div class="container">
-            <a href="/projects/" class="back-link">
-                <span class="arrow">←</span> Back to Projects
-            </a>
+            <a href="/projects/" class="back-link"><span class="arrow">←</span> Back to Projects</a>
         </div>
     </nav>
 
-    <!-- ========== PROJECT HEADER ========== -->
+    <!-- Project Header -->
     <header class="project-header">
         <div class="container">
             <div class="project-header-content">
@@ -651,55 +332,47 @@
                 </div>
                 <p class="project-tagline">Windows hardware real-time overlay</p>
                 <p class="project-description">
-                    A lightweight Windows overlay to display real-time hardware metrics such as 
-                    CPU, GPU, RAM, Disk, and Network. Built with WPF and LibreHardwareMonitor. 
+                    A lightweight Windows overlay to display real-time hardware metrics such as
+                    CPU, GPU, RAM, Disk, and Network. Built with WPF and LibreHardwareMonitor.
                     Designed for minimal distraction: always-on-top, compact, customizable, and fast.
                 </p>
                 <div class="header-buttons">
                     <a href="https://github.com/fakedevbagus/TopMonitoring" target="_blank" rel="noopener noreferrer" class="btn btn-primary">View on GitHub</a>
-                    <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-secondary">Download Portable</a>
+                    <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-secondary" id="downloadBtn">Download Portable</a>
                 </div>
-                <div class="release-info">
-                    <span class="version-tag">v1.1.0</span>
-                    Latest Stable Release — Portable .exe included
+                <div class="release-info" id="releaseInfo">
+                    <span class="skeleton" id="versionSkeleton"></span>
+                    <span id="releaseText">Fetching latest release...</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- ========== PROJECT INFO BAR ========== -->
+    <!-- Project Info Bar -->
     <div class="project-info-bar">
         <div class="container">
-            <div class="info-item">
-                <span class="info-label">Status:</span>
-                <span class="info-value">Active Development</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Type:</span>
-                <span class="info-value">System Tool</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Platform:</span>
-                <span class="info-value">Desktop / Windows</span>
-            </div>
+            <div class="info-item"><span class="info-label">Status:</span><span class="info-value">Active Development</span></div>
+            <div class="info-item"><span class="info-label">Type:</span><span class="info-value">System Tool</span></div>
+            <div class="info-item"><span class="info-label">Platform:</span><span class="info-value">Desktop / Windows</span></div>
         </div>
     </div>
 
-    <!-- ========== SCREENSHOTS SECTION ========== -->
-    <section class="screenshots fade-in">
+    <!-- Screenshots -->
+    <section class="reveal">
         <div class="container">
+            <span class="section-label">Preview</span>
             <h2 class="section-title">Screenshots</h2>
             <div class="screenshot-grid">
-                <div class="screenshot-item">
+                <div class="screenshot-item stagger-child">
                     <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/dock.PNG" alt="TopMonitoring Overlay Dock" loading="lazy">
                     <div class="screenshot-label">Overlay Dock — Always-on-top compact bar</div>
                 </div>
                 <div class="screenshot-row">
-                    <div class="screenshot-item">
+                    <div class="screenshot-item stagger-child">
                         <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/darktheme.PNG" alt="TopMonitoring Dark Theme" loading="lazy">
                         <div class="screenshot-label">Dark Theme</div>
                     </div>
-                    <div class="screenshot-item">
+                    <div class="screenshot-item stagger-child">
                         <img src="https://raw.githubusercontent.com/fakedevbagus/TopMonitoring/main/docs/screenshots/lighttheme.PNG" alt="TopMonitoring Light Theme" loading="lazy">
                         <div class="screenshot-label">Light Theme</div>
                     </div>
@@ -708,13 +381,13 @@
         </div>
     </section>
 
-    <!-- ========== FEATURES SECTION ========== -->
-    <section class="features fade-in">
+    <!-- Features -->
+    <section class="reveal">
         <div class="container">
+            <span class="section-label">Capabilities</span>
             <h2 class="section-title">Features</h2>
             <div class="feature-groups">
-
-                <div class="feature-group">
+                <div class="feature-group stagger-child">
                     <h3><span class="icon">🖥</span> Overlay / Dock</h3>
                     <ul class="feature-list">
                         <li>Always-on-top top bar overlay (minimal distraction)</li>
@@ -724,8 +397,7 @@
                         <li>Safe N/A fallback when sensor data unavailable</li>
                     </ul>
                 </div>
-
-                <div class="feature-group">
+                <div class="feature-group stagger-child">
                     <h3><span class="icon">📊</span> Real-time Metrics</h3>
                     <ul class="feature-list">
                         <li>CPU Load / Temperature / Power</li>
@@ -736,8 +408,7 @@
                         <li>Network throughput (Down / Up)</li>
                     </ul>
                 </div>
-
-                <div class="feature-group">
+                <div class="feature-group stagger-child">
                     <h3><span class="icon">⚙</span> Settings & Customization</h3>
                     <ul class="feature-list">
                         <li>Dark / Light mode theme toggle</li>
@@ -748,8 +419,7 @@
                         <li>Metric order editor (Up / Down reorder)</li>
                     </ul>
                 </div>
-
-                <div class="feature-group">
+                <div class="feature-group stagger-child">
                     <h3><span class="icon">✅</span> Quality & Stability</h3>
                     <ul class="feature-list">
                         <li>Stable, optimized update loop</li>
@@ -758,100 +428,135 @@
                         <li>Lightweight WPF overlay with minimal resource usage</li>
                     </ul>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- ========== TECH STACK ========== -->
-    <section class="tech-section fade-in">
+    <!-- Tech Stack -->
+    <section class="reveal">
         <div class="container">
+            <span class="section-label">Built With</span>
             <h2 class="section-title">Tech Stack</h2>
             <div class="tech-badges">
-                <span class="tech-badge">▹ C#</span>
-                <span class="tech-badge">▹ .NET 8</span>
-                <span class="tech-badge">▹ WPF</span>
-                <span class="tech-badge">▹ LibreHardwareMonitor</span>
+                <span class="tech-badge stagger-child">▹ C#</span>
+                <span class="tech-badge stagger-child">▹ .NET 8</span>
+                <span class="tech-badge stagger-child">▹ WPF</span>
+                <span class="tech-badge stagger-child">▹ LibreHardwareMonitor</span>
             </div>
         </div>
     </section>
 
-    <!-- ========== REQUIREMENTS ========== -->
-    <section class="requirements fade-in">
+    <!-- Requirements -->
+    <section class="reveal">
         <div class="container">
+            <span class="section-label">Prerequisites</span>
             <h2 class="section-title">Requirements</h2>
             <ul class="req-list">
-                <li>Windows 10 / 11</li>
-                <li>.NET SDK 8 (for building from source)</li>
-                <li>LibreHardwareMonitor (included as dependency)</li>
+                <li class="stagger-child">Windows 10 / 11</li>
+                <li class="stagger-child">.NET SDK 8 (for building from source)</li>
+                <li class="stagger-child">LibreHardwareMonitor (included as dependency)</li>
             </ul>
         </div>
     </section>
 
     <hr class="section-divider">
 
-    <!-- ========== DOWNLOAD SECTION ========== -->
-    <section class="download-section fade-in">
+    <!-- Download Section -->
+    <section class="download-section reveal">
         <div class="container">
+            <span class="section-label">Get Started</span>
             <h2 class="section-title">Download TopMonitoring</h2>
             <p class="download-description">
                 Get the latest stable release. Extract the zip and run — no installation needed.
             </p>
-            <div class="download-buttons">
-                <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-primary">Download Portable v1.1.0</a>
+            <div class="download-buttons" id="downloadButtons">
+                <a href="https://github.com/fakedevbagus/TopMonitoring/releases/download/v1.1.0/TopMonitoring-portable-v1.1.0.zip" class="btn btn-primary" id="dlPortable">Download Portable</a>
                 <a href="https://github.com/fakedevbagus/TopMonitoring/releases" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">All Releases</a>
             </div>
             <p class="download-note">Portable .exe — no installer required. Run as administrator for full sensor access.</p>
         </div>
     </section>
 
-    <!-- ========== FOOTER ========== -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p class="footer-text">
-                © 2026 <span>FakeDevBagus</span> — Built with passion for building useful software.
-            </p>
+            <p class="footer-text">© 2026 <span>FakeDevBagus</span> — Built with passion for building useful software.</p>
             <p class="footer-subtext">Designed & developed personally.</p>
-            <p class="footer-subtext">Version 1.0 • Last updated 2026</p>
+            <p class="footer-subtext">Version 2.0 • Last updated 2026</p>
         </div>
     </footer>
 
-    <!-- ========== JAVASCRIPT ========== -->
-    <script>
-        // Fade-in animation on scroll
-        const fadeElements = document.querySelectorAll('.fade-in');
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
-        const fadeInObserver = new IntersectionObserver((entries) => {
+    <script>
+        /* ── Scroll Progress ── */
+        const prog = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const s = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+            prog.style.width = (h > 0 ? (s / h) * 100 : 0) + '%';
+        }, { passive: true });
+
+        /* ── Staggered Reveal ── */
+        const revealObs = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    entry.target.querySelectorAll('.stagger-child').forEach((c, i) => {
+                        setTimeout(() => c.classList.add('visible'), i * 100);
+                    });
+                    revealObs.unobserve(entry.target);
                 }
             });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-        fadeElements.forEach(element => {
-            fadeInObserver.observe(element);
-        });
+        /* ── Back to Top ── */
+        const btt = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 500), { passive: true });
+        btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        // Back to Top button
-        const backToTop = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
+        /* ── GitHub Release Auto-Detect ── */
+        (async function fetchLatestRelease() {
+            const REPO = 'fakedevbagus/TopMonitoring';
+            const API = `https://api.github.com/repos/${REPO}/releases/latest`;
+            const versionSkeleton = document.getElementById('versionSkeleton');
+            const releaseText = document.getElementById('releaseText');
+
+            try {
+                const res = await fetch(API);
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                const version = data.tag_name;
+                const releaseName = data.name || version;
+                const assets = data.assets || [];
+
+                // Update version display
+                versionSkeleton.className = 'version-tag';
+                versionSkeleton.textContent = version;
+                releaseText.textContent = `${releaseName} — ${assets.length} asset${assets.length !== 1 ? 's' : ''} available`;
+
+                // Find portable asset
+                const portableAsset = assets.find(a =>
+                    a.name.toLowerCase().includes('portable') || a.name.toLowerCase().endsWith('.zip')
+                );
+
+                // Update download buttons with latest URLs
+                const dlPortable = document.getElementById('dlPortable');
+                const downloadBtn = document.getElementById('downloadBtn');
+
+                if (portableAsset) {
+                    dlPortable.href = portableAsset.browser_download_url;
+                    dlPortable.textContent = `Download Portable ${version}`;
+                    downloadBtn.href = portableAsset.browser_download_url;
+                }
+            } catch (err) {
+                // Fallback — keep static links
+                versionSkeleton.className = 'version-tag';
+                versionSkeleton.textContent = 'v1.1.0';
+                releaseText.textContent = 'Latest Stable Release — Portable .exe included';
             }
-        });
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        })();
     </script>
-
-    <!-- ========== BACK TO TOP ========== -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
-
 </body>
 </html>
